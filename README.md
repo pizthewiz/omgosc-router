@@ -7,5 +7,15 @@ The usually-unstructured handling of message routing leaves one with large condi
 ### EXAMPLES
 
 ```javascript
-(FORTHCOMING)
+var router = new OSCRouter();
+receiver.on('', router.handle.bind(router));
+router.use('/heartbeat', function (msg) {
+  handleHeartbeat(msg);
+});
+router.use('/slide_add', function (msg) {
+  handleSlideAdd(msg);
+});
+router.use('*', function (msg) {
+  console.warn('WARNING - OSC message unhandled, sent to \'' + msg.path + '\'');
+});
 ```
