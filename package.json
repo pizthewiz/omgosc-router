@@ -1,0 +1,26 @@
+{
+  "name": "omgosc-router",
+  "version": "0.0.0",
+  "description": "simple osc message router for the omgosc receiver",
+  "keywords": [
+    "osc",
+    "open sound control",
+    "omgosc",
+    "router"
+  ],
+  "homepage": "https://github.com/pizthewiz/omgosc-router",
+  "bugs": {
+    "url": "https://github.com/pizthewiz/omgosc-router/issues"
+  },
+  "licenses": { "license" : "MIT" },
+  "author": "Jean-Pierre Mouilleseaux <jpm@chordedconstructions.com>",
+  "main": "omgosc-router.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pizthewiz/omgosc-router.git"
+  },
+  "dependencies": {
+    "omgosc": "*"
+  },
+  "private": "true"
+}
