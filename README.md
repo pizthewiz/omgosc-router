@@ -2,20 +2,24 @@
 ## omgosc-router
 A simple OSC message router for the [omgosc](https://github.com/deanm/omgosc) receiver.
 
-The usually-unstructured handling of message routing leaves one with large conditionals or switch statements. *omgosc-router* implements a simple Router based on that from [Express](https://github.com/visionmedia/express), largely for convenience. It is my intention that this project will be a prototype for an Objective-C router implementation that will go into [PonyExpress](https://github.com/pizthewiz/PonyExpress). Additionally, the [OSCQueryProposal](https://github.com/mrRay/OSCQueryProposal) has some very interesting elements that a central router will help in realizing.
+OSC message handling usually leaves one with large conditionals or switch statements. *omgosc-router* implements a simple router based on [Express](https://github.com/visionmedia/express), to make handling more explicit. This project also acts as a simple mechanism to prototype before an Objective-C router implementation is added to [PonyExpress](https://github.com/pizthewiz/PonyExpress) and as a way to investigate some aspects of the [OSCQueryProposal](https://github.com/mrRay/OSCQueryProposal).
 
 ### EXAMPLE
 
 ```javascript
-var router = new OSCRouter();
-receiver.on('', router.handle.bind(router));
-router.use('/heartbeat', function (msg) {
-  handleHeartbeat(msg);
+var osc = require('./omgosc-router');
+
+var port = process.env.PORT || 9999;
+var receiver = new osc.UdpReceiver(port);
+console.log("✔ OSC receiver listening on port %d", port);
+
+receiver.route('/slide_add', function (msg) {
+  console.log('slide add', msg);
 });
-router.use('/slide_add', function (msg) {
-  handleSlideAdd(msg);
+receiver.route('/slide_remove', function (msg) {
+  console.log('slide remove', msg);
 });
-router.use('*', function (msg) {
-  console.warn('WARNING - OSC message unhandled, sent to \'' + msg.path + '\'');
+receiver.route('*', function (msg) {
+  console.warn("WARNING - OSC message unhandled, sent to '%s'", msg.path);
 });
 ```
