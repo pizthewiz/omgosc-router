@@ -7,7 +7,31 @@ OSC message handling usually leaves one with large conditionals or switch statem
 ### EXAMPLE
 
 ```javascript
-var osc = require('./omgosc-router');
+var osc = require('omgosc');
+var Router = require('./omgosc-router')();
+
+var port = process.env.PORT || 9999;
+var receiver = new osc.UdpReceiver(port);
+console.log("✔ OSC receiver listening on port %d", port);
+
+var router = new Router();
+receiver.on('', router.handle.bind(router));
+
+router.route('/slide_add', function (msg) {
+  console.log('slide add', msg);
+});
+router.route('/slide_remove', function (msg) {
+  console.log('slide remove', msg);
+});
+router.route('*', function (msg) {
+  console.warn("WARNING - OSC message unhandled, sent to '%s'", msg.path);
+});
+```
+
+Alternatively, if the *omgosc* module is passed into *omgosc-router* at `require` time, a couple of methods will be added to `osc.UdpReceiver` and a more concise syntax can be used.
+```javascript
+var osc = require('omgosc');
+require('./omgosc-router')(osc);
 
 var port = process.env.PORT || 9999;
 var receiver = new osc.UdpReceiver(port);

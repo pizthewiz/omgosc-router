@@ -1,7 +1,5 @@
 /*jshint node:true, strict:false */
 
-var osc = require('omgosc');
-
 // NB - pathRegexp taken directly from Express https://github.com/visionmedia/express/blob/master/lib/utils.js
 var pathRegexp = function(path, keys, sensitive, strict) {
   if (toString.call(path) == '[object RegExp]') return path;
@@ -46,8 +44,7 @@ function Router() {
 Router.prototype.route = function (path, callback) {
   // check if the path already exists
   for (var idx = 0; idx < this.routes.length; idx++) {
-    var r = this.routes[idx];
-    if (path === r.path) {
+    if (path === this.routes[idx].path) {
       console.error('ERROR - route for path \'%s\' already exists, skipping', path);
       return;
     }
@@ -72,17 +69,22 @@ Router.prototype.handle = function (msg) {
   }
 };
 
-osc.UdpReceiver.prototype.route = function (path, callback) {
-  if (this.router === undefined) {
-    this.router = new Router();
-    this.on('', this.router.handle.bind(this.router));
+module.exports = function (osc) {
+  // naive inspection if the omgosc module was passed in
+  if (toString.call(osc) == '[object Object]') {
+    osc.UdpReceiver.prototype.route = function (path, callback) {
+      if (this.router === undefined) {
+        this.router = new Router();
+        this.on('', this.router.handle.bind(this.router));
+      }
+
+      this.router.route(path, callback);
+    };
+
+    osc.UdpReceiver.prototype.routes = function () {
+      return this.router ? this.router.routes : [];
+    };
   }
 
-  this.router.route(path, callback);
+  return Router;
 };
-
-osc.UdpReceiver.prototype.routes = function () {
-  return this.router ? this.router.routes : [];
-};
-
-module.exports = osc;
