@@ -2,10 +2,9 @@
 ## omgosc-router
 A simple OSC message router for the [omgosc](https://github.com/deanm/omgosc) receiver.
 
-OSC message handling usually leaves one with large conditionals or switch statements. *omgosc-router* implements a simple router based on [Express](https://github.com/visionmedia/express), to make handling more explicit. This project also acts as a simple mechanism to prototype before an Objective-C router implementation is added to [PonyExpress](https://github.com/pizthewiz/PonyExpress) and as a way to investigate some aspects of the [OSCQueryProposal](https://github.com/mrRay/OSCQueryProposal).
+OSC message handling usually leaves one with large conditionals or switch statements. *omgosc-router* implements a simple router based on [Express](https://github.com/visionmedia/express), to make handling more explicit. [omgosc](https://github.com/deanm/omgosc) does emit events for an osc message's address, but this just takes that one step further. This project also acts as a simple mechanism to prototype before an Objective-C router implementation is added to [PonyExpress](https://github.com/pizthewiz/PonyExpress) and as a way to investigate some aspects of the [OSCQueryProposal](https://github.com/mrRay/OSCQueryProposal).
 
 ### EXAMPLE
-
 ```javascript
 var osc = require('omgosc');
 var Router = require('./omgosc-router')();
@@ -47,3 +46,6 @@ receiver.route('*', function (msg) {
   console.warn("WARNING - OSC message unhandled, sent to '%s'", msg.path);
 });
 ```
+
+### NOTES
+*omgosc-router* does not implement OSC message dispatch via pattern matching from the OSC message address. The feature is generally unimplemented in most OSC libraries and not particularly useful in practice.
