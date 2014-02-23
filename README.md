@@ -1,10 +1,9 @@
-
 ## omgosc-router
 A simple OSC message router for the [omgosc](https://github.com/deanm/omgosc) receiver.
 
-OSC message handling usually leaves one with large conditionals or switch statements. *omgosc-router* implements a simple router based on [Express](https://github.com/visionmedia/express), to make handling more explicit. [omgosc](https://github.com/deanm/omgosc) does emit events for an osc message's address, but this just takes that one step further. This project also acts as a simple mechanism to prototype before an Objective-C router implementation is added to [PonyExpress](https://github.com/pizthewiz/PonyExpress) and as a way to investigate some aspects of the [OSCQueryProposal](https://github.com/mrRay/OSCQueryProposal).
+OSC message handling usually leaves one with large conditionals or switch statements. While [omgosc](https://github.com/deanm/omgosc) does emit events for an osc message's address, *omgosc-router* implements a simple router based on [Express](https://github.com/visionmedia/express) to make handling more explicit and much more flexible. This project also acts as a simple mechanism to prototype a router API before being added to the Objective-C OSC library [PonyExpress](https://github.com/pizthewiz/PonyExpress) and as a way to investigate the [OSCQueryProposal](https://github.com/mrRay/OSCQueryProposal).
 
-### EXAMPLE
+### EXAMPLES
 ```javascript
 var osc = require('omgosc');
 var Router = require('./omgosc-router')();
@@ -32,6 +31,24 @@ receiver.route('/slide_add', function (msg) {
 });
 receiver.route('*', function (msg) {
   console.warn("WARNING - OSC message unhandled, sent to '%s'", msg.path);
+});
+```
+
+Much like one would do in [Express](https://github.com/visionmedia/express), routes can specify parameters that will be matched and the values provided in an `params` argument in the callback. This allows a single route to handle many addresses at once.
+```javascript
+function Oscillator() {
+  this.coarseTune = 0;
+}
+// two tracks with two oscillators each
+var tracks = [[new Oscillator(), new Oscillator()], [new Oscillator(), new Oscillator()]];
+
+var receiver = new osc.UdpReceiver(9999);
+receiver.route('/:track/:oscillator/coarse_tune', function (msg, params) {
+  var trackIndex = ['track1', 'track2'].indexOf(params.track);
+  var oscillatorIndex = ['oscillator1', 'oscillator2'].indexOf(params.oscillator);
+  var oscillator = tracks[trackIndex][oscillatorIndex];
+  oscillator.coarseTune = msg.params[0];
+  console.log('coarseTune: %d (%s:%s)', oscillator.coarseTune, params.track, params.oscillator);
 });
 ```
 
