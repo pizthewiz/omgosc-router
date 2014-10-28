@@ -83,6 +83,7 @@ Router.prototype.route = function (path, callback) {
 };
 
 Router.prototype.handle = function (msg) {
+  // catch common context binding error
   if (toString.call(this.routes) !== '[object Array]') {
     console.error('ERROR - Router not bound to \'this\' when calling handle(), failed to route message');
     return;
@@ -98,7 +99,7 @@ Router.prototype.handle = function (msg) {
 };
 
 module.exports = function (osc) {
-  // naive inspection if the omgosc module was passed in
+  // naive inspection if the omgosc module was passed in to monkey patch
   if (toString.call(osc) == '[object Object]') {
     osc.UdpReceiver.prototype.route = function (path, callback) {
       if (this.router === undefined) {
