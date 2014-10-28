@@ -1,4 +1,5 @@
-/*jshint node:true, strict:false */
+/*jshint node:true, strict:true */
+'use strict';
 
 var osc = require('omgosc');
 require('./omgosc-router')(osc);

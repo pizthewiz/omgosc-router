@@ -1,4 +1,5 @@
-/*jshint node:true, strict:false */
+/*jshint node:true, strict:true */
+'use strict';
 
 // NB - pathRegexp taken directly from Express https://github.com/visionmedia/express/blob/master/lib/utils.js
 var pathRegexp = function(path, keys, sensitive, strict) {
